@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cvs.mapper.AppInfoMapper">
+    <select id="getAppInfoList" resultType="appInfo">
+        select i.*,c1.categoryName categoryLevel1Name,c2.categoryName categoryLevel2Name,c3.categoryName categoryLevel3Name,
+        (select valueName from data_dictionary d where typeCode='APP_FLATFORM' and valueId=flatformId) flatformName,
+        (select valueName from data_dictionary d where typeCode='APP_STATUS' and valueId=status) statusName,versionNo,devName
+        from app_info i
+        left join app_category c1 on i.categoryLevel1 = c1.id
+        left join app_category c2 on i.categoryLevel2 = c2.id
+        left join app_category c3 on i.categoryLevel3 = c3.id
+        left join app_version v on i.versionId = v.id
+        left join dev_user d on i.devId = d.id
+        <where>
+            <if test="devId ==0">
+                and status=1
+            </if>
+            <if test="devId!=null and devId !=0">
+                and devId=#{devId}
+            </if>
+            <if test="softwareName!=null and softwareName!=''">
+                and softwareName like concat('%',#{softwareName},'%')
+            </if>
+            <if test="apkName!=null and apkName!=''">
+                and apkName like concat('%',#{apkName},'%')
+            </if>
+            <if test="status!=null and status!=0">
+                and status=#{status}
+            </if>
+            <if test="flatformId!=null and flatformId!=0">
+                and flatformId=#{flatformId}
+            </if>
+            <if test="categoryLevel1!=null and categoryLevel1!=0">
+                and categoryLevel1=#{categoryLevel1}
+            </if>
+            <if test="categoryLevel2!=null and categoryLevel2!=0">
+                and categoryLevel2=#{categoryLevel2}
+            </if>
+            <if test="categoryLevel3!=null and categoryLevel3!=0">
+                and categoryLevel3=#{categoryLevel3}
+            </if>
+        </where>
+        limit #{pageNo},#{pageSize}
+    </select>
+    <select id="getPageDataCount" resultType="int">
+        select count(i.id) from app_info i
+        <where>
+            <if test="devId ==0">
+                and status=1
+            </if>
+            <if test="devId!=null and devId !=0">
+                and devId=#{devId}
+            </if>
+            <if test="softwareName!=null and softwareName!=''">
+                and softwareName like concat('%',#{softwareName},'%')
+            </if>
+            <if test="apkName!=null and apkName!=''">
+                and apkName like concat('%',#{apkName},'%')
+            </if>
+            <if test="status!=null and status!=0">
+                and status=#{status}
+            </if>
+            <if test="flatformId!=null and flatformId!=0">
+                and flatformId=#{flatformId}
+            </if>
+            <if test="categoryLevel1!=null and categoryLevel1!=0">
+                and categoryLevel1=#{categoryLevel1}
+            </if>
+            <if test="categoryLevel2!=null and categoryLevel2!=0">
+                and categoryLevel2=#{categoryLevel2}
+            </if>
+            <if test="categoryLevel3!=null and categoryLevel3!=0">
+                and categoryLevel3=#{categoryLevel3}
+            </if>
+        </where>
+    </select>
+    <select id="checkApkName" resultType="int">select count(id) from app_info where apkName=#{apkName}</select>
+    <insert id="addInfo">
+        insert app_info(softwareName,apkName,flatformId,status,categoryLevel1,categoryLevel2,categoryLevel3,supportROM,interfaceLanguage,softwareSize,appInfos,logoPicPath,devId,createdBy,creationDate)
+        values(#{softwareName},#{apkName},#{flatformId},1,#{categoryLevel1},#{categoryLevel2},#{categoryLevel3},#{supportROM},#{interfaceLanguage},#{softwareSize},#{appInfos},#{logoPicPath},#{devId},#{devId},now())
+    </insert>
+    <select id="appInfoById" resultType="appInfo">
+        select id,softwareName,apkName,flatformId,categoryLevel1,categoryLevel2,categoryLevel3,supportROM,interfaceLanguage,softwareSize,appInfos,logoPicPath,versionId from app_info
+        where id=#{id}
+    </select>
+    <update id="updateInfo">
+        update app_info
+        <set>
+            softwareName=#{softwareName},
+            apkName=#{apkName},
+            flatformId=#{flatformId},
+            categoryLevel1=#{categoryLevel1},
+            categoryLevel2=#{categoryLevel2},
+            categoryLevel3=#{categoryLevel3},
+            supportROM=#{supportROM},
+            interfaceLanguage=#{interfaceLanguage},
+            softwareSize=#{softwareSize},
+            appInfos=#{appInfos},
+            logoPicPath=#{logoPicPath},
+            modifyBy=#{devId},
+            modifyDate=now(),
+            status=1,
+        </set>
+         where id=#{id};
+    </update>
+    <delete id="delAppInfo">delete from app_info where id=#{id}</delete>
+    <update id="upOrDownStatus">update app_info set status=#{status} where id=#{id}</update>
+    <update id="upInfoByVersionId">update app_info set versionId=#{versionId} where id=#{id}</update>
+
+    <select id="getBackendList" resultType="backendUser"/>
+</mapper>

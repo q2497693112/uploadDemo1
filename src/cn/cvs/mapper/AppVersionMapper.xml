@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cvs.mapper.AppVersionMapper">
+    <select id="versionById" resultType="appVersion">select * from app_version where appId=#{appId}</select>
+    <delete id="delVersion">delete from app_version where appId=#{appId}</delete>
+    <insert id="addVersion" useGeneratedKeys="true" keyProperty="id">
+        insert app_version(appId,versionNo,versionInfo,versionSize,downloadLink,createdBy,creationDate,apkFileName)
+        values (#{appId},#{versionNo},#{versionInfo},#{versionSize},#{downloadLink},#{createdBy},now(),#{apkFileName})</insert>
+</mapper>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cvs.mapper.DataDictionaryMapper">
+    <select id="flatformList" resultType="dataDictionary">
+        select * from data_dictionary where typeCode='APP_FLATFORM'
+    </select>
+    <select id="statusList" resultType="dataDictionary">
+        select * from data_dictionary where typeCode='APP_STATUS'
+    </select>
+</mapper>
